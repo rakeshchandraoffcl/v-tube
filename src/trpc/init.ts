@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { ratelimit } from "@/lib/rate-limit";
 export const createTRPCContext = cache(async () => {
 	/**
 	 * @see: https://trpc.io/docs/server/context
@@ -37,6 +38,10 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
 		.where(eq(users.clerkId, ctx.clerkUserId));
 	if (!user) {
 		throw new TRPCError({ code: "UNAUTHORIZED" });
+	}
+	const { success } = await ratelimit.limit(user.id);
+	if (!success) {
+		throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 	}
 	return next({ ctx: { ...ctx, user } });
 });
