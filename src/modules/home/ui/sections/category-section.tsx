@@ -25,9 +25,5 @@ const CategorySectionContent = ({ categoryId }: CategorySectionProps) => {
 		value: category.id,
 		label: category.name,
 	}));
-	return (
-		<div className="flex flex-col gap-y-6">
-			<FilterCarousel value={categoryId} data={carouselData} />
-		</div>
-	);
+	return <FilterCarousel isLoading value={categoryId} data={carouselData} />;
 };
