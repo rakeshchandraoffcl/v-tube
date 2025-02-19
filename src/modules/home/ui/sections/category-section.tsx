@@ -9,10 +9,14 @@ interface CategorySectionProps {
 	categoryId?: string;
 }
 
+const CategoryLoader = () => {
+	return <FilterCarousel isLoading value={null} data={[]} />;
+};
+
 export const CategorySection = ({ categoryId }: CategorySectionProps) => {
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
-			<ErrorBoundary fallback={<div>Error</div>}>
+		<Suspense fallback={<CategoryLoader />}>
+			<ErrorBoundary fallback={<CategoryLoader />}>
 				<CategorySectionContent categoryId={categoryId} />
 			</ErrorBoundary>
 		</Suspense>
