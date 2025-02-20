@@ -2,6 +2,7 @@
 
 import { FilterCarousel } from "@/components/filter-carousel";
 import { trpc } from "@/trpc/client";
+import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -25,9 +26,25 @@ export const CategorySection = ({ categoryId }: CategorySectionProps) => {
 
 const CategorySectionContent = ({ categoryId }: CategorySectionProps) => {
 	const [categories] = trpc.categories.getMany.useSuspenseQuery();
+	const router = useRouter();
 	const carouselData = categories.map((category) => ({
 		value: category.id,
 		label: category.name,
 	}));
-	return <FilterCarousel isLoading value={categoryId} data={carouselData} />;
+	const onSelect = (value: string | null) => {
+		const url = new URL(window.location.href);
+		if (value) {
+			url.searchParams.set("categoryId", value);
+		} else {
+			url.searchParams.delete("categoryId");
+		}
+		router.push(url.toString());
+	};
+	return (
+		<FilterCarousel
+			value={categoryId}
+			data={carouselData}
+			onSelect={onSelect}
+		/>
+	);
 };

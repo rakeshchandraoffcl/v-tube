@@ -73,6 +73,7 @@ export const FilterCarousel = ({
 							<Badge
 								variant={!value ? "default" : "outline"}
 								className="rounded-lg px-3 py-1 cursor-pointer whitespace-nowrap text-sm"
+								onClick={() => onSelect?.(null)}
 							>
 								All
 							</Badge>
